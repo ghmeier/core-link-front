@@ -3,6 +3,7 @@
 	<h2>{{fleet.name}}</h2>
 	<h3 style="display:inline;">Fuel: {{fleet.fuel}} </h3>
 	<button style="width:100px;" ng-click="incrementFuel()">Fill</button>
+	<h5>Auto-Harvesting {{autoHarv}}/sec</h5>
 	</div>
 	<div style=" width:80%; margin-top:50px; display:block; margin-left:auto; margin-right:auto;">
 		<uib-tabset>
@@ -55,20 +56,23 @@
 		   <uib-tab heading="Fleet">
 				<ul>
 			        <ul ng-repeat="(key, ship) in fleet.ships">
-				    	<div style="float:left;border:1px solid black ;width:25%; height:300px;padding:30px" ng-click="checkUpgrades(key)">
+				    	<div style="float:left;border:1px solid black ;width:25%; height:300px;padding:20px" ng-click="checkUpgrades(key)">
 				    		<h3 style="float:right; margin-right:30px; color:red;">{{key+1}}</h3>
 				    		<h4 class="ship-data">Ship Type: {{ship.type}}</h4>
 				    		<h4 class="ship-data">Durability: {{ship.durability}}/{{ship.durability_max}}</h4>
 				    		<h4 class="ship-data">Capacity: {{ship.capacity}}</h4>
 						    <h4 class="ship-data">Population: {{ship.population}}/{{ship.population_max}}</h4>
 						    <h4 class="ship-data">Food: {{ship.food}}</h4>
-						</br>
-						    <h4 class="ship-data">Harvesters: {{ship.harvesters.length}}</h4>
-						    <ul ng-repeat="(h_key, harvester) in ship.harvesters">
-						    	<h5>Harvester Lv. {{harvester.level}}</h5>
-						    	<button style="width:100%; color:green;" ng-click="levelHarvester(key,h_key)">Upgrade +{{(harvester.level+1) * 50}} aluminium</button>
+
+						    <h4 class="ship-data">Harvesters:</h4>
+						    <ul style="padding:2px;" ng-repeat="(h_key, harvester) in ship.harvesters">
+						    	<h5 style=" display:inline;">Harvester Lv. {{harvester.level}}</h5>
+						    	<button style="margin-left:5px;color:green;" ng-click="levelHarvester(key,h_key)">+{{(harvester.level+1) * 50}} aluminium</button>
 						    </ul>
-						    <button style="width:100%; color:green;" ng-click="addHarvester(key)">Buy +{{ship.harvester_cost || 1}} steel</button>
+						    <button style="margin-top:5px;color:green;" ng-click="addHarvester(key)">Buy new +{{ship.harvester_cost || 1}} steel</button>
+				    	</div>
+				    	<div style="float:left;border:1px solid black; width:25%; height:300px;padding:20px">
+				    		<i style="margin-left:40%;" class="fa fa-plus fa-5x"></i>
 				    	</div>
 		    		</ul>
 			    </ul>
