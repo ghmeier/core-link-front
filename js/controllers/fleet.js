@@ -2,6 +2,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.planet = {};
 	$scope.updateProgress = 0;
+	$scope.updateProgressMax = 0;
 	$scope.resourceList = {};
 	$scope.upgrades = {};
 	$scope.upgradeIds = {};
@@ -76,6 +77,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				$rootScope.fleet.fuel = 0;
 				$scope.planet = {};
 				$scope.updateProgress = 0;
+				$scope.updateProgressMax = 0;
 				$scope.resourceList = {};
 				$scope.upgrades = {};
 				$scope.upgradeIds = {};
@@ -101,7 +103,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 		for(var key in $scope.planet.connections) {
 			if($scope.planet.connections[key].weight * 10 <= $rootScope.fleet.fuel) {
-				printed += "( "+(count)+" ) " + $scope.planet.connections[key].weight + "lbs of fuel to get there\n";
+				printed += "( "+(count)+" ) " + ($scope.planet.connections[key].weight).toFixed(1) + " lbs of fuel to get there\n";
 				options[(count)] = $scope.planet.connections[key];
 				count++;
 			}
@@ -117,6 +119,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {});
 				$scope.planet = {};
 				$scope.updateProgress = 0;
+				$scope.updateProgressMax = 0;
 				$scope.resourceList = {};
 				$scope.upgrades = {};
 				$scope.upgradeIds = {};
@@ -169,6 +172,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		for(var key in $scope.upgradeIds) {
 			$scope.upgradeIds[key].show = false;
 			for(var id in $scope.upgradeIds[key]) {
+				console.log(JSON.stringify($scope.upgrades.planet[id]));
 				$scope.upgradeIds[key][id] = $scope.upgrades.planet[id];
 				if(typeof $scope.planet.upgrades !== 'undefined' && typeof $scope.planet.upgrades[id] !== 'undefined') {
 					var level = $scope.planet.upgrades[id].level;
@@ -187,19 +191,22 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	var updateProgress = function() {
 		$scope.updateProgress++;
-		if($scope.updateProgress >= 4) {
+		if($scope.updateProgress >= $scope.updateProgressMax) {
 			createFinalUpdateObject();
 			$scope.updateProgress = 0;
+			$scope.updateProgressMax = 0;
 		}
 	}
 
 	var getUpgradeIds = function() {
 		var planetResLength = ($scope.planet.resources).length
+		$scope.updateProgressMax += planetResLength;
 		for(var i = 0; i < planetResLength; i++) {
 			HttpService.getRequest($rootScope.path+"/upgrades/planet/find/"+$scope.planet.resources[i].type, function(err, data) {
 				if(!err) {
+					
 					$scope.upgradeIds[data.type] = data.ids;
-				}
+				} 
 				updateProgress();
 			});
 		}
@@ -220,7 +227,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var getUpgrades = function() {
-
+		$scope.updateProgressMax += 3;
 		HttpService.getRequest($rootScope.path+"/upgrades/fleet", function(err, data) {
 			if(!err) {
 				$scope.upgrades["fleet"] = data;
@@ -252,6 +259,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				
 				$scope.planet = {};
 				$scope.updateProgress = 0;
+				$scope.updateProgressMax = 0;
 				$scope.resourceList = {};
 				$scope.upgrades = {};
 				$scope.upgradeIds = {};
@@ -264,35 +272,27 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	$scope.addHarvester = function(ship_position){
-		var new_time = new Date().getTime();
-		if(new_time - $scope.currentTime >= 5000) {
-			$scope.currentTime = new_time;
-			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
-				HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/add_harvester", function(err, data) {
-					if(err) {
-						alert(data);
-					} else {
-						$rootScope.fleet = data;
-					}
-				});
+		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+			HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/add_harvester", function(err, data) {
+				if(err) {
+					alert(data);
+				} else {
+					$rootScope.fleet = data;
+				}
 			});
-		}
+		});
 	}
 
-	$scope.lvHarvester = function(ship_position,harvester_position){
-		if(new_time - $scope.currentTime >= 5000) {
-			$scope.currentTime = new_time;
-			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
-				HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ship/"+ship_position+"/harvesters/"+harvester_position+"/level", function(err, data) {
-					if(err) {
-						alert(data);
-					} else {
-						$rootScope.fleet = data;
-					}
-				});
+	$scope.levelHarvester = function(ship_position,harvester_position){
+		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+			HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/harvesters/"+harvester_position+"/level", function(err, data) {
+				if(err) {
+					alert(data);
+				} else {
+					$rootScope.fleet = data;
+				}
 			});
-		}
-
+		});
 	}
 
 	//If they arent logged in, log them in
