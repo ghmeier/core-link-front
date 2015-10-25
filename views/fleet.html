@@ -68,7 +68,11 @@
 						    <h4 class="ship-data">Food: {{ship.food}}</h4>
 						</br>
 						    <h4 class="ship-data">Harvesters: {{ship.harvesters.length}}</h4>
-						    <button style="width:100%; color:green;" ng-click="addHarvester(key)">Buy +{{ship.harvester_cost}} steel</button>
+						    <ul ng-repeat="(h_key, harvester) in ship.harvesters">
+						    	<h5>Harvester Lv. {{harvester.level}}</h5>
+						    	<button style="width:100%; color:green;" ng-click="levelHarvester(key,h_key)">Upgrade +{{(harvester.level+1) * 50}} aluminium</button>
+						    </ul>
+						    <button style="width:100%; color:green;" ng-click="addHarvester(key)">Buy +{{ship.harvester_cost || 1}} steel</button>
 				    	</div>
 		    		</ul>
 			    </ul>

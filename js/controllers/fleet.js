@@ -262,7 +262,18 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	$scope.addHarvester = function(ship_position){
-		HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ship/"+ship_position+"/add_harvester", function(err, data) {
+		HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/add_harvester", function(err, data) {
+			if(err) {
+				alert(data);
+			} else {
+				getPlanetInfo();
+				getUpgrades();
+			}
+		});
+	}
+
+	$scope.lvHarvester = function(ship_position,harvester_position){
+		HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ship/"+ship_position+"/harvesters/"+harvester_position+"/level", function(err, data) {
 			if(err) {
 				alert(data);
 			} else {
