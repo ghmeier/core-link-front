@@ -9,7 +9,7 @@ angular.module('corelink.services').service('HttpService', function($http) {
             if(data.success) {
               callback(false, data.data);
             } else {
-              callback(true, data.data);
+              callback(true, data.message);
             }
         }).error(function (data, status, headers, config) { 
 
@@ -25,7 +25,7 @@ angular.module('corelink.services').service('HttpService', function($http) {
             if(data.success) {
               callback(false, data);
             } else {
-              callback(true, data);
+              callback(true, message);
             }
         }).error(function (data) {
             callback(true, 'Was not able to talk to ' + path);

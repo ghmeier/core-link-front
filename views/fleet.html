@@ -1,35 +1,77 @@
-<div ng-controller="FleetController">
-
+<div ng-controller="FleetController" style="width:100%;">
+	
+	<h2>{{fleet.name}}</h2>
+	<h3 style="display:inline;">Fuel: {{fleet.fuel}} </h3>
+	<button style="width:100px;" ng-click="incrementFuel()">Fill</button>
+	
 	<div style=" width:80%; margin-top:50px; display:block; margin-left:auto; margin-right:auto;">
 		<uib-tabset>
 		    <uib-tab style=""heading="Planet">
-
-		    	<h3>Current Planet: {{fleet.current_planet}} ({{planet.sizeString}})</h3> 
-				<h3>Resources</h3>
-				<div style="margin-left:20px;">
-					<ul>
-			        	<ul ng-repeat="(key, resource) in resourceList">
-			        		<div ng-if="resource.harvest">
-			        			<h5 style="display:inline;">
-			        			{{key}}: {{resource.amount}}
-			        			</h5>
-			        			<button ng-click="incrementResource(key, resource.mod, resource.abundance)">Harvest</button>
-			        		</div>
-			        		<div style="display:inline;" ng-if="!resource.harvest">
-			        			<h5> 
-			        			{{key}}: {{resource.amount}} 
-			        			</h5>
-			        		</div> 
-			        	</ul>
-			    	</ul>
+		    	<div style="width:65%; float:left;">
+			    	<h3>Current Planet: {{planet.name}} ({{planet.sizeString}})</h3> 
+			    	<h4>Planet Discoverer: {{planet.discoverer}}</h4> 
+			    	<button style="display:inline;" ng-click="searchPlanet()">Search For New Planet</button>
+					<button ng-click="neighborPlanet()">Go To Neighboring Planet</button>
+					<h3>Resources</h3>
+					<div style="margin-left:20px;">
+						<ul>
+				        	<ul ng-repeat="(key, resource) in resourceList">
+				        		<div ng-if="resource.harvest">
+				        			<h5 style="display:inline;">
+				        			{{key}}: {{resource.amount}}
+				        			</h5>
+				        			<button ng-click="incrementResource(key, resource.mod, resource.abundance)">Harvest</button>
+				        		</div>
+				        		<div style="display:inline;" ng-if="!resource.harvest">
+				        			<h5> 
+				        			{{key}}: {{resource.amount}} 
+				        			</h5>
+				        		</div> 
+				        	</ul>
+				    	</ul>
+		    		</div>
 		    	</div>
-		 
+		    	<div style="width:35%; float:right;" ng-if="planet.discoverer == fleet.name">
+		    		<ul ng-repeat="(key, upgrade) in upgradeIds">
+			    		<button style="width:100%;" type="button" class="btn btn-default" ng-click="upgrade['show'] = !upgrade['show']">{{key}} upgrade</button>
+						<hr>
+						<div uib-collapse="upgrade['show']">
+							
+							<ul ng-repeat="obj in upgradeIds[key]">
+								<div style="width:100%;" ng-if="obj.name">
+									<h3>{{obj.name}}</h3>
+									<h5>{{obj.desc}}</h5>
+									<h3>Cost</h3>
+									<ul ng-repeat="(i, v) in upgradeIds[key][obj.id].cost">
+										<h5 style="margin-right:10px;">{{i}} - {{v}}</h5>
+									</ul>
+									<h3>Reward</h3>
+									<ul ng-repeat="(i, v) in upgradeIds[key][obj.id].result">
+										<h5 style="margin-right:10px;">{{i}} - {{v}}</h5>
+									</ul>
+									<button style="width:100%; color:green;" ng-click="buyUpgrade(obj.id)">Buy</button>
+								</div>
+							</ul> 
+						</div>
+					</ul> 	
+				</div> 
 			</uib-tab>
-		    <uib-tab heading="Fleet">
-
-		    	<div style="width:40%;">
-		    	</div>
-
+		   <uib-tab heading="Fleet">
+				<ul>
+			        <ul ng-repeat="(key, ship) in fleet.ships">
+				    	<div style="float:left;border:1px solid black ;width:25%; height:300px;" ng-click="checkUpgrades(key)">
+				    		<h3 style="float:right; margin-right:30px; color:red;">{{key+1}}</h3>
+				    		<h4 class="ship-data">Ship Type: {{ship.type}}</h4>
+				    		<h4 class="ship-data">Durability: {{ship.durability}}</h4>
+				    		<h4 class="ship-data">Capacity: {{ship.capacity}}</h4>
+						    <h4 class="ship-data">Population: {{ship.population}}</h4>
+						    <h4 class="ship-data">Food: {{ship.food}}</h4>
+						</br>
+							<h4 class="ship-data">Durability Max:{{ship.durability_max}}</h4>
+						    <h4 class="ship-data">Population Max: {{ship.population_max}}</h4>
+				    	</div>
+		    		</ul>
+			    </ul>
 
 			</uib-tab>
 	  	</uib-tabset>
