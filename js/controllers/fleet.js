@@ -320,7 +320,15 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				if(err) {
 					alert(data);
 				} else {
+					$scope.planet = {};
+					$scope.updateProgress = 0;
+					$scope.updateProgressMax = 0;
+					$scope.resourceList = {};
+					$scope.upgrades = {};
+					$scope.upgradeIds = {};
 					$rootScope.fleet = data;
+					getPlanetInfo();
+					getUpgrades();
 				}
 			});
 		});
@@ -333,7 +341,15 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				if(err) {
 					alert(data);
 				} else {
+					$scope.planet = {};
+					$scope.updateProgress = 0;
+					$scope.updateProgressMax = 0;
+					$scope.resourceList = {};
+					$scope.upgrades = {};
+					$scope.upgradeIds = {};
 					$rootScope.fleet = data;
+					getPlanetInfo();
+					getUpgrades();
 				}
 			});
 		});
@@ -348,7 +364,15 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 			   if(err) {
 					alert(data);
 				} else {
+					$scope.planet = {};
+					$scope.updateProgress = 0;
+					$scope.updateProgressMax = 0;
+					$scope.resourceList = {};
+					$scope.upgrades = {};
+					$scope.upgradeIds = {};
 					$rootScope.fleet = data;
+					getPlanetInfo();
+					getUpgrades();
 				}
 			});
 		});
