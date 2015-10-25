@@ -25,7 +25,7 @@ angular.module('corelink.services').service('HttpService', function($http) {
             if(data.success) {
               callback(false, data);
             } else {
-              callback(true, message);
+              callback(true, data.message);
             }
         }).error(function (data) {
             callback(true, 'Was not able to talk to ' + path);
