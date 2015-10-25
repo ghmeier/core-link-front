@@ -74,9 +74,9 @@
 				    	<div style="color:green;float:left;border:1px solid black; width:25%; height:300px;padding:20px">
 				    		<div ng-click="buyShip()"><i style="color:green;" class="fa fa-plus fa-5x"></i></div>
 				    		<h4 style="color:green;">{{fleet.ships.length * (fleet.ships.length * 50)}} aluminium</h3>
-				    		<h4 style="color:green;">{{(ships.length * 500) / 15}} oil</h3>
-				    		<h4 style="color:green;">855 copper</h3>
-				    		<h4 style="color:green;">{{Math.pow(16,ships.length) + 100}} steel</h3>
+				    		<h4 style="color:green;">{{fleet.ships.length * 500 / 15}} oil</h3>
+				    		<h4 style="color:green;">{{(Math.random() * 500 + 500) * fleet.ships.length }}copper</h3>
+				    		<h4 style="color:green;">{{Math.pow(16,fleet.ships.length) + 100}} steel</h3>
 				    	</div>
 		    		</ul>
 			    </ul>
