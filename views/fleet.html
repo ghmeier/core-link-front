@@ -1,0 +1,37 @@
+<div ng-controller="FleetController">
+
+	<div style=" width:80%; margin-top:50px; display:block; margin-left:auto; margin-right:auto;">
+		<uib-tabset>
+		    <uib-tab style=""heading="Planet">
+
+		    	<h3>Current Planet: {{fleet.current_planet}} ({{planet.sizeString}})</h3> 
+				<h3>Resources</h3>
+				<div style="margin-left:20px;">
+					<ul>
+			        	<ul ng-repeat="(key, resource) in resourceList">
+			        		<div ng-if="resource.harvest">
+			        			<h5 style="display:inline;">
+			        			{{key}}: {{resource.amount}}
+			        			</h5>
+			        			<button ng-click="incrementResource(key, resource.mod, resource.abundance)">Harvest</button>
+			        		</div>
+			        		<div style="display:inline;" ng-if="!resource.harvest">
+			        			<h5> 
+			        			{{key}}: {{resource.amount}} 
+			        			</h5>
+			        		</div> 
+			        	</ul>
+			    	</ul>
+		    	</div>
+		 
+			</uib-tab>
+		    <uib-tab heading="Fleet">
+
+		    	<div style="width:40%;">
+		    	</div>
+
+
+			</uib-tab>
+	  	</uib-tabset>
+  	</div>
+</div>

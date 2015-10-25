@@ -7,9 +7,9 @@ angular.module('corelink.services').service('HttpService', function($http) {
     this.getRequest = function(path, callback) {
         $http.get(path).success(function (data, status, headers, config) {
             if(data.success) {
-              callback(false, data);
+              callback(false, data.data);
             } else {
-              callback(true, data);
+              callback(true, data.data);
             }
         }).error(function (data, status, headers, config) { 
 
