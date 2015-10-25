@@ -31,9 +31,9 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.incrementResource = function(type, mod, abundance) {
 		var old_amount = parseFloat( $scope.resourceList[type].amount);
-		var new_amount = mod * abundance;
-		new_amount = Math.round(new_amount * 10) / 10;
-		$scope.resourceList[type].amount = (old_amount + new_amount).toFixed(1);
+		var new_amount = (mod * abundance).toFixed(2);
+		//new_amount = Math.round(new_amount * 10) / 10;
+		$scope.resourceList[type].amount = (old_amount + new_amount).toFixed(2);
 		$rootScope.fleet.resources[type] = old_amount + new_amount;
 		var new_time = new Date().getTime();
 
@@ -176,7 +176,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				$scope.upgradeIds[key][id] = $scope.upgrades.planet[id];
 				if(typeof $scope.planet.upgrades !== 'undefined' && typeof $scope.planet.upgrades[id] !== 'undefined') {
 					var level = $scope.planet.upgrades[id].level;
-					
+
 					for(var item in $scope.upgradeIds[key][id].cost) {
 						$scope.upgradeIds[key][id].cost[item] = ($scope.upgradeIds[key][id].cost[item] * Math.pow($scope.upgradeIds[key][id].cost_multiplier, level));
 					}
@@ -256,7 +256,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 			if(err) {
 				alert(data);
 			} else {
-				
+
 				$scope.planet = {};
 				$scope.updateProgress = 0;
 				$scope.updateProgressMax = 0;
@@ -266,7 +266,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				renewFleet();
 				getPlanetInfo();
 				getUpgrades();
-				
+
 			}
 		});
 	}
