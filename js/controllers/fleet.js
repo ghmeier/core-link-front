@@ -11,8 +11,8 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		HttpService.getRequest($rootScope.path+"/fleet"+"?name="+$rootScope.fleet.name, function(err, data) {
 			if(!err) {
 				$rootScope.fleet = data;
-				
-			} 
+
+			}
 		});
 	}
 
@@ -262,25 +262,35 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	$scope.addHarvester = function(ship_position){
-		HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/add_harvester", function(err, data) {
-			if(err) {
-				alert(data);
-			} else {
-				getPlanetInfo();
-				getUpgrades();
-			}
-		});
+		var new_time = new Date().getTime();
+		if(new_time - $scope.currentTime >= 5000) {
+			$scope.currentTime = new_time;
+			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+				HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/add_harvester", function(err, data) {
+					if(err) {
+						alert(data);
+					} else {
+						$rootScope.fleet = data;
+					}
+				});
+			});
+		}
 	}
 
 	$scope.lvHarvester = function(ship_position,harvester_position){
-		HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ship/"+ship_position+"/harvesters/"+harvester_position+"/level", function(err, data) {
-			if(err) {
-				alert(data);
-			} else {
-				getPlanetInfo();
-				getUpgrades();
-			}
-		});
+		if(new_time - $scope.currentTime >= 5000) {
+			$scope.currentTime = new_time;
+			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+				HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ship/"+ship_position+"/harvesters/"+harvester_position+"/level", function(err, data) {
+					if(err) {
+						alert(data);
+					} else {
+						$rootScope.fleet = data;
+					}
+				});
+			});
+		}
+
 	}
 
 	//If they arent logged in, log them in
