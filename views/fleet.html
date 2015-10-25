@@ -16,9 +16,9 @@
 					<div style="margin-left:20px;">
 						<table>
 							<tbody>
-				        	<tr ng-repeat="(key, resource) in resourceList">
+				        	<tr style="padding-top:30px;padding-bottom:30px" ng-repeat="(key, resource) in resourceList">
 				        			<td><h5 style="display:inline;">{{key}}:</h5></td>
-				        			<td><h5 style="display:inline"> {{resource.amount}}</h5></td>
+				        			<td><h5 style="display:inline;padding-left:10px;padding-right:10px"> {{resource.amount}}</h5></td>
 				        			<td ng-if="resource.harvest">
 				        			<button ng-click="incrementResource(key, resource.mod, resource.abundance)">Harvest +{{(resource.mod * resource.abundance).toFixed(2)}}</button>
 				        			</td>
