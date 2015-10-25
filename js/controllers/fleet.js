@@ -19,11 +19,11 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				var harv = $rootScope.fleet.ships[ship].harvesters[harvestor];
 				var amount = harv.multiplier * harv.speed;
 				var time_difference = (new_time - old_time)/1000;
-				total += Math.abs((amount * time_difference) / 100);
+				total += Math.abs((amount * time_difference) / 1000);
 			}
 		}
 		$scope.harvestingTimer = new_time;
-		$rootScope["autoHarv"] = total.toFixed(3);
+		$rootScope["autoHarv"] = total.toFixed(4);
 		$scope.harvestingCarry += total;
 		//$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + total).toFixed(1);
 	}
@@ -136,7 +136,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 		for(var key in $scope.planet.connections) {
 			if($scope.planet.connections[key].weight * 10 <= $rootScope.fleet.fuel) {
-				printed += "( "+(count)+" ) Costs " + ($scope.planet.connections[key].weight).toFixed(1) + " lbs of fuel.\n";
+				printed += "( "+(count)+" ) Costs " + ($scope.planet.connections[key].weight * 10).toFixed(1) + " lbs of fuel.\n";
 				options[(count)] = $scope.planet.connections[key];
 				count++;
 			}
@@ -330,6 +330,21 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
 			HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/harvesters/"+harvester_position+"/level", function(err, data) {
 				if(err) {
+					alert(data);
+				} else {
+					$rootScope.fleet = data;
+				}
+			});
+		});
+	}
+
+	$scope.buyShip = function(){
+		
+		$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
+		$scope.harvestingCarry = 0;
+		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+			HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/add_ship?type=basic", function(err, data) {
+			   if(err) {
 					alert(data);
 				} else {
 					$rootScope.fleet = data;

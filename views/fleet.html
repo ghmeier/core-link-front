@@ -71,8 +71,12 @@
 						    </ul>
 						    <button style="margin-top:5px;color:green;" ng-click="addHarvester(key)">Buy new +{{ship.harvester_cost || 1}} steel</button>
 				    	</div>
-				    	<div style="float:left;border:1px solid black; width:25%; height:300px;padding:20px">
-				    		<i style="margin-left:40%;" class="fa fa-plus fa-5x"></i>
+				    	<div style="color:green;float:left;border:1px solid black; width:25%; height:300px;padding:20px">
+				    		<div ng-click="buyShip()"><i style="color:green;" class="fa fa-plus fa-5x"></i></div>
+				    		<h4 style="color:green;">1000 aluminium</h3>
+				    		<h4 style="color:green;">2000 steel</h3>
+				    		<h4 style="color:green;">855 copper</h3>
+				    		<h4 style="color:green;">1000 oil</h3>
 				    	</div>
 		    		</ul>
 			    </ul>
