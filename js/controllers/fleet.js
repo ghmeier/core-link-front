@@ -31,9 +31,9 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.incrementResource = function(type, mod, abundance) {
 		var old_amount = parseFloat( $scope.resourceList[type].amount);
-		var new_amount = (mod * abundance).toFixed(2);
-		//new_amount = Math.round(new_amount * 10) / 10;
-		$scope.resourceList[type].amount = (old_amount + new_amount).toFixed(2);
+		var new_amount = mod * abundance;
+		new_amount = Math.round(new_amount * 10) / 10;
+		$scope.resourceList[type].amount = (old_amount + new_amount).toFixed(1);
 		$rootScope.fleet.resources[type] = old_amount + new_amount;
 		var new_time = new Date().getTime();
 
@@ -204,9 +204,9 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		for(var i = 0; i < planetResLength; i++) {
 			HttpService.getRequest($rootScope.path+"/upgrades/planet/find/"+$scope.planet.resources[i].type, function(err, data) {
 				if(!err) {
-					
+
 					$scope.upgradeIds[data.type] = data.ids;
-				} 
+				}
 				updateProgress();
 			});
 		}
