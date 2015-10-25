@@ -103,7 +103,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 		for(var key in $scope.planet.connections) {
 			if($scope.planet.connections[key].weight * 10 <= $rootScope.fleet.fuel) {
-				printed += "( "+(count)+" ) " + ($scope.planet.connections[key].weight).toFixed(1) + " lbs of fuel to get there\n";
+				printed += "( "+(count)+" ) Costs " + ($scope.planet.connections[key].weight).toFixed(1) + " lbs of fuel.\n";
 				options[(count)] = $scope.planet.connections[key];
 				count++;
 			}

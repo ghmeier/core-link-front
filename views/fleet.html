@@ -17,10 +17,10 @@
 						<table>
 							<tbody>
 				        	<tr style="padding-top:30px;padding-bottom:30px" ng-repeat="(key, resource) in resourceList">
-				        			<td><h5 style="display:inline;">{{key}}:</h5></td>
+				        			<td><h5 style="display:inline;font-weight:bold">{{key}}:</h5></td>
 				        			<td><h5 style="display:inline;padding-left:10px;padding-right:10px"> {{resource.amount}}</h5></td>
 				        			<td ng-if="resource.harvest">
-				        			<button ng-click="incrementResource(key, resource.mod, resource.abundance)">Harvest +{{(resource.mod * resource.abundance).toFixed(2)}}</button>
+				        			<button ng-click="incrementResource(key, resource.mod, resource.abundance)">Harvest <span style="color:green">+{{(resource.mod * resource.abundance).toFixed(2)}}</span></button>
 				        			</td>
 				        			<td ng-if="!resource.harvest"></td>
 				        	</tr>
@@ -55,7 +55,7 @@
 		   <uib-tab heading="Fleet">
 				<ul>
 			        <ul ng-repeat="(key, ship) in fleet.ships">
-				    	<div style="float:left;border:1px solid black ;width:25%; height:300px;" ng-click="checkUpgrades(key)">
+				    	<div style="float:left;border:1px solid black ;width:25%; height:300px;padding:30px" ng-click="checkUpgrades(key)">
 				    		<h3 style="float:right; margin-right:30px; color:red;">{{key+1}}</h3>
 				    		<h4 class="ship-data">Ship Type: {{ship.type}}</h4>
 				    		<h4 class="ship-data">Durability: {{ship.durability}}/{{ship.durability_max}}</h4>
