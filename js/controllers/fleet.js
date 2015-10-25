@@ -26,29 +26,29 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		$scope.resourceList[type].amount = (old_amount + new_amount).toFixed(1);
 		$rootScope.fleet.resources[type] = old_amount + new_amount;
 		var new_time = new Date().getTime();
-		
+
 		if(new_time - $scope.currentTime >= 5000) {
 			$scope.currentTime = new_time;
 			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
-				
+
 			});
-		}		
+		}
 	}
 
 	$scope.incrementFuel = function() {
 		var ur = (parseFloat($scope.resourceList["uranium"].amount)+1) *3;
 		var co = (parseFloat($scope.resourceList["coal"].amount)+1) * 2;
 		var am = (parseFloat($scope.resourceList["oil"].amount)+1) * 1;
-		
+
 		var amount = (ur + co + am) / 4;
 		amount = Math.round(amount * 10) / 10;
 		$rootScope.fleet.fuel += amount;
 		var new_time = new Date().getTime();
-		
+
 		if(new_time - $scope.currentTime >= 5000) {
 			$scope.currentTime = new_time;
 			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {});
-		}		
+		}
 	}
 
 	$scope.searchPlanet = function() {
@@ -60,7 +60,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				alert("Oh No, nothing was found. Looks like " + name + " will have to wait another day");
 				$rootScope.fleet.fuel = 0;
 			} else {
-	
+
 				alert("Welcome to the newly discovered planet " + name);
 				$rootScope.fleet.current_planet = data.id;
 				$rootScope.fleet.fuel = 0;
@@ -71,7 +71,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				$scope.upgradeIds = {};
 				getPlanetInfo();
 				getUpgrades();
-			}	
+			}
 			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {});
 		});
 	}
@@ -136,9 +136,9 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 			$scope.resourceList[key] = {"amount" : val.toFixed(1), "harvest" : false};
 			for(var i = 0; i < planetResLength; i++) {
 				if($scope.planet.resources[i].type === key) {
-					$scope.resourceList[key].harvest = true; 
-					$scope.resourceList[key]["abundance"] = $scope.planet.resources[i].abundance; 
-					$scope.resourceList[key]["mod"] = $scope.planet.resources[i].mod; 
+					$scope.resourceList[key].harvest = true;
+					$scope.resourceList[key]["abundance"] = $scope.planet.resources[i].abundance;
+					$scope.resourceList[key]["mod"] = $scope.planet.resources[i].mod;
 					break;
 				}
 			}
@@ -225,6 +225,17 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	$scope.buyUpgrade = function(id) {
 
 		HttpService.getRequest($rootScope.path+"/planet/"+$scope.planet.id+"/upgrade/"+id+"?fleet_id="+$rootScope.fleet.id, function(err, data) {
+			if(err) {
+				alert(data);
+			} else {
+				getPlanetInfo();
+				getUpgrades();
+			}
+		});
+	}
+
+	$scope.addHarvester = function(ship_position){
+		HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ship/"+ship_position+"/add_harvester", function(err, data) {
 			if(err) {
 				alert(data);
 			} else {

@@ -1,15 +1,15 @@
 <div ng-controller="FleetController" style="width:100%;">
-	
+
 	<h2>{{fleet.name}}</h2>
 	<h3 style="display:inline;">Fuel: {{fleet.fuel}} </h3>
 	<button style="width:100px;" ng-click="incrementFuel()">Fill</button>
-	
+
 	<div style=" width:80%; margin-top:50px; display:block; margin-left:auto; margin-right:auto;">
 		<uib-tabset>
 		    <uib-tab style=""heading="Planet">
 		    	<div style="width:65%; float:left;">
-			    	<h3>Current Planet: {{planet.name}} ({{planet.sizeString}})</h3> 
-			    	<h4>Planet Discoverer: {{planet.discoverer}}</h4> 
+			    	<h3>Current Planet: {{planet.name}} ({{planet.sizeString}})</h3>
+			    	<h4>Planet Discoverer: {{planet.discoverer}}</h4>
 			    	<button style="display:inline;" ng-click="searchPlanet()">Search For New Planet</button>
 					<button ng-click="neighborPlanet()">Go To Neighboring Planet</button>
 					<h3>Resources</h3>
@@ -23,10 +23,10 @@
 				        			<button ng-click="incrementResource(key, resource.mod, resource.abundance)">Harvest</button>
 				        		</div>
 				        		<div style="display:inline;" ng-if="!resource.harvest">
-				        			<h5> 
-				        			{{key}}: {{resource.amount}} 
+				        			<h5>
+				        			{{key}}: {{resource.amount}}
 				        			</h5>
-				        		</div> 
+				        		</div>
 				        	</ul>
 				    	</ul>
 		    		</div>
@@ -36,7 +36,7 @@
 			    		<button style="width:100%;" type="button" class="btn btn-default" ng-click="upgrade['show'] = !upgrade['show']">{{key}} upgrade</button>
 						<hr>
 						<div uib-collapse="upgrade['show']">
-							
+
 							<ul ng-repeat="obj in upgradeIds[key]">
 								<div style="width:100%;" ng-if="obj.name">
 									<h3>{{obj.name}}</h3>
@@ -51,10 +51,10 @@
 									</ul>
 									<button style="width:100%; color:green;" ng-click="buyUpgrade(obj.id)">Buy</button>
 								</div>
-							</ul> 
+							</ul>
 						</div>
-					</ul> 	
-				</div> 
+					</ul>
+				</div>
 			</uib-tab>
 		   <uib-tab heading="Fleet">
 				<ul>
@@ -62,13 +62,13 @@
 				    	<div style="float:left;border:1px solid black ;width:25%; height:300px;" ng-click="checkUpgrades(key)">
 				    		<h3 style="float:right; margin-right:30px; color:red;">{{key+1}}</h3>
 				    		<h4 class="ship-data">Ship Type: {{ship.type}}</h4>
-				    		<h4 class="ship-data">Durability: {{ship.durability}}</h4>
+				    		<h4 class="ship-data">Durability: {{ship.durability}}/{{ship.durability_max}}</h4>
 				    		<h4 class="ship-data">Capacity: {{ship.capacity}}</h4>
-						    <h4 class="ship-data">Population: {{ship.population}}</h4>
+						    <h4 class="ship-data">Population: {{ship.population}}/{{ship.population_max}}</h4>
 						    <h4 class="ship-data">Food: {{ship.food}}</h4>
 						</br>
-							<h4 class="ship-data">Durability Max:{{ship.durability_max}}</h4>
-						    <h4 class="ship-data">Population Max: {{ship.population_max}}</h4>
+						    <h4 class="ship-data">Harvesters: {{ship.harvesters.length}}</h4>
+						    <button style="width:100%; color:green;" ng-click="addHarvester(key)">Buy +{{ship.harvester_cost}} steel</button>
 				    	</div>
 		    		</ul>
 			    </ul>
