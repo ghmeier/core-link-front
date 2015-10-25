@@ -293,22 +293,23 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.buyUpgrade = function(id) {
 		updateHarvesters(function(){});
-		HttpService.getRequest($rootScope.path+"/planet/"+$scope.planet.id+"/upgrade/"+id+"?fleet_id="+$rootScope.fleet.id, function(err, data) {
-			if(err) {
-				alert(data);
-			} else {
+		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+			HttpService.getRequest($rootScope.path+"/planet/"+$scope.planet.id+"/upgrade/"+id+"?fleet_id="+$rootScope.fleet.id, function(err, data) {
+				if(err) {
+					alert(data);
+				} else {
+					$scope.planet = {};
+					$scope.updateProgress = 0;
+					$scope.updateProgressMax = 0;
+					$scope.resourceList = {};
+					$scope.upgrades = {};
+					$scope.upgradeIds = {};
+					renewFleet();
+					getPlanetInfo();
+					getUpgrades();
 
-				$scope.planet = {};
-				$scope.updateProgress = 0;
-				$scope.updateProgressMax = 0;
-				$scope.resourceList = {};
-				$scope.upgrades = {};
-				$scope.upgradeIds = {};
-				renewFleet();
-				getPlanetInfo();
-				getUpgrades();
-
-			}
+				}
+			});
 		});
 	}
 
