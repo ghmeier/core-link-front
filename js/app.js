@@ -1,8 +1,8 @@
 'use strict';
 angular.module("corelink",["corelink.controllers", "ngRoute", "ui.bootstrap"])
 .run(function($rootScope) {
-    
-    $rootScope.path = "http://localhost:3000"
+
+    $rootScope.path = "http://core-link.herokuapp.com"
 
 
     $rootScope.fleet = null;
