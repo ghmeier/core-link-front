@@ -25,7 +25,9 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		$scope.harvestingTimer = new_time;
 		$rootScope["autoHarv"] = total.toFixed(4);
 		$scope.harvestingCarry += total;
+		console.log("Update harvester total: " + total);
 		//$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + total).toFixed(1);
+		$rootScope.fleet.fuel += total;
 	}
 
 	var renewFleet = function() {
@@ -132,38 +134,59 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		updateHarvesters(function(){});
 		var options = {};
 		var printed = "Enter the number of the planet you would like to visit: \n\n";
-		var count = 1;
+		var received = 0; //Number of planet info retrievals successfully performed 
+		var planetCount = 0; //Number of planets checked
 
-		for(var key in $scope.planet.connections) {
-			if($scope.planet.connections[key].weight * 10 <= $rootScope.fleet.fuel) {
-				printed += "( "+(count)+" ) Costs " + ($scope.planet.connections[key].weight * 10).toFixed(1) + " lbs of fuel.\n";
-				options[(count)] = $scope.planet.connections[key];
-				count++;
+		//Function to call when all planets have been processed
+		var done = function() {
+			if(getObjectLength(options) <= 0) {
+				alert("You cannot reach any planet nearby");
+			} else {
+				var choice = $scope.getNeighborChoice(options, printed);
+				if(choice!=null) {
+					$rootScope.fleet.current_planet = choice.id;
+					$rootScope.fleet.fuel -= (choice.weight*10);
+					$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
+					$scope.harvestingCarry = 0;
+					HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {});
+					$scope.planet = {};
+					$scope.updateProgress = 0;
+					$scope.updateProgressMax = 0;
+					$scope.resourceList = {};
+					$scope.upgrades = {};
+					$scope.upgradeIds = {};
+					renewFleet();
+					getPlanetInfo();
+					getUpgrades();
+					console.log("here");
+				}
+				console.log(JSON.stringify($scope.planet));
 			}
 		}
-
-		if(getObjectLength(options) <= 0) {
-			alert("You cannot reach any planet nearby");
-		} else {
-			var choice = $scope.getNeighborChoice(options, printed);
-			if(choice!=null) {
-				$rootScope.fleet.current_planet = choice.id;
-				$rootScope.fleet.fuel -= (choice.weight*10);
-				$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
-				$scope.harvestingCarry = 0;
-				HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {});
-				$scope.planet = {};
-				$scope.updateProgress = 0;
-				$scope.updateProgressMax = 0;
-				$scope.resourceList = {};
-				$scope.upgrades = {};
-				$scope.upgradeIds = {};
-				renewFleet();
-				getPlanetInfo();
-				getUpgrades();
-				console.log("here");
+		
+		for(var key in $scope.planet.connections) {
+			if($scope.planet.connections[key].weight * 10 <= $rootScope.fleet.fuel) {
+				var connection = $scope.planet.connections[key];
+				
+				HttpService.getRequest($rootScope.path + "/planet/" + connection.id, function(err, data) {
+					if(!err) {
+						printed += "( "+(count)+" ) " + data.name + " costs " + 
+							($scope.planet.connections[key].weight * 10).toFixed(1) + " lbs of fuel.\n";
+						
+						options[(planetCount + 1)] = $scope.planet.connections[key];
+					
+						received++;
+					}
+					
+					//If all planets have been checked for distance and their names have been received, prompt the user
+					if(planetCount == $scope.planet.connections.length && received == planetCount)
+						done();
+				});
+				
+				count++;
 			}
-			console.log(JSON.stringify($scope.planet));
+			
+			planetCount++;
 		}
 	}
 
@@ -253,10 +276,11 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var getPlanetInfo = function() {
-		
 		HttpService.getRequest($rootScope.path+"/planet/"+$rootScope.fleet.current_planet, function(err, data) {
 			if(!err) {
 				$scope.planet = data;
+				console.log($scope.planet);
+				console.log(JSON.stringify($scope.planet));
 				setPlanetSize();
 				createResourceList();
 
