@@ -9,7 +9,6 @@ angular.module('corelink.controllers').controller("LoginController", function($r
 				if(!err) {
 					callback(data);
 				} else {
-					alert("here");
 					//If the user exists, pull their data from the server
 					HttpService.getRequest($rootScope.path + "/fleet?name=" + username, function(err, data)
 					{
