@@ -1,5 +1,4 @@
 angular.module('corelink.controllers').controller("FleetController", function($rootScope, $scope, $location, $timeout, HttpService){
-
 	$scope.planet = {};
 	$scope.updateProgress = 0;
 	$scope.updateProgressMax = 0;
@@ -25,9 +24,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		$scope.harvestingTimer = new_time;
 		$rootScope["autoHarv"] = total.toFixed(4);
 		$scope.harvestingCarry += total;
-		console.log("Update harvester total: " + total);
-		//$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + total).toFixed(1);
-		$rootScope.fleet.fuel += total;
+		$rootScope.fleet.fuel = (parseFloat($rootScope.fleet.fuel) + total).toFixed(1);
 	}
 
 	var renewFleet = function() {
@@ -55,6 +52,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.incrementResource = function(type, mod, abundance) {
 		updateHarvesters(function(){});
+		//alert(JSON.stringify($scope.resourceList));
 		var old_amount = parseFloat( $scope.resourceList[type].amount);
 		var new_amount = mod * abundance;
 		new_amount = Math.round(new_amount * 10) / 10;
@@ -62,14 +60,14 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		$rootScope.fleet.resources[type] = old_amount + new_amount;
 		var new_time = new Date().getTime();
 
-		if(new_time - $scope.currentTime >= 5000) {
+/* 		if(new_time - $scope.currentTime >= 5000) {
 			$scope.currentTime = new_time;
 			$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 			$scope.harvestingCarry = 0;
 			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
 
 			});
-		}
+		} */
 	}
 
 	$scope.incrementFuel = function() {
@@ -139,6 +137,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 		//Function to call when all planets have been processed
 		var done = function() {
+			console.log(JSON.stringify(options));
 			if(getObjectLength(options) <= 0) {
 				alert("You cannot reach any planet nearby");
 			} else {
@@ -158,36 +157,41 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					renewFleet();
 					getPlanetInfo();
 					getUpgrades();
-					console.log("here");
 				}
 				console.log(JSON.stringify($scope.planet));
+			}
+		}
+
+		//Closure to create an http get request
+		var createRequestFunct = function(connection) {
+			return function() {
+				HttpService.getRequest($rootScope.path + "/planet/" + connection.id, function(err, data) {
+					if(!err) {
+						printed += "( "+(received+1)+" ) " + data.name + " costs " + 
+							(connection.weight * 10).toFixed(1) + " lbs of fuel.\n";
+						
+						options[(received+1)] = connection;
+						
+						received++;
+					}
+					
+					//If data has been received for each planet in range, prompt the user
+					if(received == planetCount)
+						done();
+				});
 			}
 		}
 		
 		for(var key in $scope.planet.connections) {
 			if($scope.planet.connections[key].weight * 10 <= $rootScope.fleet.fuel) {
-				var connection = $scope.planet.connections[key];
-				
-				HttpService.getRequest($rootScope.path + "/planet/" + connection.id, function(err, data) {
-					if(!err) {
-						printed += "( "+(count)+" ) " + data.name + " costs " + 
-							($scope.planet.connections[key].weight * 10).toFixed(1) + " lbs of fuel.\n";
-						
-						options[(planetCount + 1)] = $scope.planet.connections[key];
+					var connection = $scope.planet.connections[key];
 					
-						received++;
-					}
+					//Create the request closure and execute it
+					createRequestFunct(connection)();
 					
-					//If all planets have been checked for distance and their names have been received, prompt the user
-					if(planetCount == $scope.planet.connections.length && received == planetCount)
-						done();
-				});
-				
-				count++;
+					planetCount++;
+				}
 			}
-			
-			planetCount++;
-		}
 	}
 
 	var setPlanetSize = function() {
@@ -279,8 +283,6 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		HttpService.getRequest($rootScope.path+"/planet/"+$rootScope.fleet.current_planet, function(err, data) {
 			if(!err) {
 				$scope.planet = data;
-				console.log($scope.planet);
-				console.log(JSON.stringify($scope.planet));
 				setPlanetSize();
 				createResourceList();
 
@@ -409,4 +411,18 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		getPlanetInfo();
 		getUpgrades();
 	}
+	
+	//Auto harvest resources every second
+	window.setInterval(function() {
+		if(typeof $scope.planet.resources === 'undefined')
+			return;
+
+		for(var i = 0; i < $scope.planet.resources.length; i++)
+		{
+			$scope.incrementResource($scope.planet.resources[i].type,
+									 $scope.planet.resources[i].mod,
+									 $scope.planet.resources[i].abundance);
+		}
+		$scope.incrementFuel();
+	}, 1000);
 });
