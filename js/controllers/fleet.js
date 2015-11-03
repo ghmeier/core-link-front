@@ -100,10 +100,10 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				alert("Oh No, nothing was found. Looks like " + name + " will have to wait another day");
 				$rootScope.fleet.fuel = 0;
 			} else {
-
 				alert("Welcome to the newly discovered planet " + name);
 				$rootScope.fleet.current_planet = data.id;
-				$rootScope.fleet.fuel = 0;
+				$rootScope.fleet.fuel -= (data.connections[0].weight*10);
+				$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 				$scope.planet = {};
 				$scope.updateProgress = 0;
 				$scope.updateProgressMax = 0;
