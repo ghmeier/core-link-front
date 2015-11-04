@@ -29,7 +29,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var renewFleet = function() {
-		
+
 		HttpService.getRequest($rootScope.path+"/fleet"+"?name="+$rootScope.fleet.name, function(err, data) {
 			if(!err) {
 				$rootScope.fleet = data;
@@ -39,7 +39,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var getObjectLength = function(object) {
-		
+
 		var count = 0;
 		var i;
 
@@ -121,7 +121,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	$scope.getNeighborChoice = function(options, print) {
-		
+
 		var choice = prompt(print, "");
 		if(choice == null || choice == "null" | choice == "") return null;
 		if(!options[choice]) return $scope.getNeighborChoice(options, print);
@@ -168,7 +168,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var setPlanetSize = function() {
-		
+
 		switch($scope.planet.size) {
 		    case 0:
 		        $scope.planet["sizeString"] = "Small";
@@ -189,7 +189,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var createResourceList = function() {
-		
+
 		var planetResLength = ($scope.planet.resources).length
 		for(key in $rootScope.fleet.resources) {
 			var val = $rootScope.fleet.resources[key];
@@ -206,7 +206,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var createFinalUpdateObject = function() {
-		
+
 		for(var key in $scope.upgradeIds) {
 			$scope.upgradeIds[key].show = false;
 			for(var id in $scope.upgradeIds[key]) {
@@ -228,7 +228,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var updateProgress = function() {
-		
+
 		$scope.updateProgress++;
 		if($scope.updateProgress >= $scope.updateProgressMax) {
 			createFinalUpdateObject();
@@ -238,7 +238,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var getUpgradeIds = function() {
-		
+
 		var planetResLength = ($scope.planet.resources).length
 		$scope.updateProgressMax += planetResLength;
 		for(var i = 0; i < planetResLength; i++) {
@@ -253,7 +253,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var getPlanetInfo = function() {
-		
+
 		HttpService.getRequest($rootScope.path+"/planet/"+$rootScope.fleet.current_planet, function(err, data) {
 			if(!err) {
 				$scope.planet = data;
@@ -267,7 +267,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var getUpgrades = function() {
-		
+
 		$scope.updateProgressMax += 3;
 		HttpService.getRequest($rootScope.path+"/upgrades/fleet", function(err, data) {
 			if(!err) {
@@ -305,6 +305,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				$scope.upgrades = {};
 				$scope.upgradeIds = {};
 				renewFleet();
+				console.log($rootScope.fleet);
 				getPlanetInfo();
 				getUpgrades();
 
@@ -313,7 +314,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	$scope.addHarvester = function(ship_position){
-		
+
 		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
 			HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/add_harvester", function(err, data) {
 				if(err) {
@@ -326,7 +327,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	$scope.levelHarvester = function(ship_position,harvester_position){
-		
+
 		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
 			HttpService.getRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/ships/"+ship_position+"/harvesters/"+harvester_position+"/level", function(err, data) {
 				if(err) {
@@ -339,7 +340,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	$scope.buyShip = function(){
-		
+
 		$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 		$scope.harvestingCarry = 0;
 		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
