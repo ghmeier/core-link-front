@@ -88,6 +88,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 		var amount = (ur + co + am) / 4;
 		amount = Math.round(amount * 10) / 10;
+		$rootScope.autoHarv = amount;
 		$rootScope.fleet.fuel = (parseFloat($rootScope.fleet.fuel) + amount).toFixed(1);
 		var new_time = new Date().getTime();
 
