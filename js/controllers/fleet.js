@@ -22,7 +22,6 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 			}
 		}
 		$scope.harvestingTimer = new_time;
-		$rootScope["autoHarv"] = total.toFixed(4);
 		$scope.harvestingCarry += total;
 		$rootScope.fleet.fuel = (parseFloat($rootScope.fleet.fuel) + total).toFixed(1);
 	}
