@@ -60,14 +60,14 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		$rootScope.fleet.resources[type] = old_amount + new_amount;
 		var new_time = new Date().getTime();
 
-/* 		if(new_time - $scope.currentTime >= 5000) {
+		if(new_time - $scope.currentTime >= 5000) {
 			$scope.currentTime = new_time;
 			$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 			$scope.harvestingCarry = 0;
 			HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
 
 			});
-		} */
+		}
 	}
 
 	$scope.incrementFuel = function() {
