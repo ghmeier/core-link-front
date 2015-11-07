@@ -9,8 +9,17 @@ angular.module('corelink.controllers').controller("LoginController", function($r
 				if(!err) {
 					callback(data);
 				} else {
-					checkUsername("Sorry, that username was already taken, try again", function(fleetData) {
-						callback(fleetData)
+					//If the user exists, pull their data from the server
+					HttpService.getRequest($rootScope.path + "/fleet?name=" + username, function(err, data)
+					{
+						if(!err)
+						{
+							callback(data);
+						}
+						else
+						{
+							callback(null);
+						}
 					});
 				}
 			});
