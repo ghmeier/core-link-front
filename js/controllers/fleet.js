@@ -22,7 +22,6 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 			}
 		}
 		$scope.harvestingTimer = new_time;
-		$rootScope["autoHarv"] = total.toFixed(4);
 		$scope.harvestingCarry += total;
 		$rootScope.fleet.fuel = (parseFloat($rootScope.fleet.fuel) + total).toFixed(1);
 	}
@@ -52,14 +51,24 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.incrementResource = function(type, mod, abundance) {
 		updateHarvesters(function(){});
-		//alert(JSON.stringify($scope.resourceList));
+		
+		//Modifier caused by the number and level of your harvesters
+		var harvesterMod = 1;
+		for(var ship in $rootScope.fleet.ships)
+		{
+			for(var harvester in $rootScope.fleet.ships[ship].harvesters)
+			{
+				harvesterMod += 1 + $rootScope.fleet.ships[ship].harvesters[harvester].level;
+			}
+		}
+		
 		var old_amount = parseFloat( $scope.resourceList[type].amount);
-		var new_amount = mod * abundance;
+		var new_amount = mod * abundance * harvesterMod;
 		new_amount = Math.round(new_amount * 10) / 10;
 		$scope.resourceList[type].amount = (old_amount + new_amount).toFixed(1);
 		$rootScope.fleet.resources[type] = old_amount + new_amount;
 		var new_time = new Date().getTime();
-
+		
 		if(new_time - $scope.currentTime >= 5000) {
 			$scope.currentTime = new_time;
 			$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
@@ -78,6 +87,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 		var amount = (ur + co + am) / 4;
 		amount = Math.round(amount * 10) / 10;
+		$rootScope.autoHarv = amount;
 		$rootScope.fleet.fuel = (parseFloat($rootScope.fleet.fuel) + amount).toFixed(1);
 		var new_time = new Date().getTime();
 
