@@ -116,7 +116,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				$rootScope.fleet.fuel -= (data.connections[0].weight*10);
 				$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 				HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
-					$rootScope.fleet = data;
+					$rootScope.fleet = data.data;
 				});
 				$scope.planet = {};
 				$scope.updateProgress = 0;
@@ -162,7 +162,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 					$scope.harvestingCarry = 0;
 					HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
-						//console.log(data);
+						$rootScope.fleet = data.data;
 					});
 					$scope.planet = {};
 					$scope.updateProgress = 0;
