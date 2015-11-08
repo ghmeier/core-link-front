@@ -2,7 +2,7 @@ angular.module('corelink.controllers').controller("LoginController", function($r
 
 	var checkUsername = function(promptString, callback) {
 		var username = prompt(promptString, "");
-		if(username=="") {
+		if(!username || username=="") {
 			callback(null);
 		} else {
 			HttpService.getRequest($rootScope.path+"/fleet/new"+"?name="+username, function(err, data) {
@@ -34,22 +34,23 @@ angular.module('corelink.controllers').controller("LoginController", function($r
 		if($rootScope.fleet == null) {
 			var username = localStorage.getItem("core-link-username");
 			if(username == null || username == "null") {
-				
+
 				//Create new fleet
 				checkUsername("Thanks for trying out Core-Link, please enter your username", function(fleetData) {
-					if(fleetData !== null) {
+					console.log(fleetData);
+					if(fleetData != null) {
 						localStorage.setItem("core-link-username", fleetData.name);
 						$rootScope.fleet = fleetData;
 						$location.path("/fleet");
-						
+
 					} else {
 						$location.path("/user-error");
 					}
 				});
-				
+
 			} else {
 				//Set root username
-			
+
 				HttpService.getRequest($rootScope.path+"/fleet"+"?name="+username, function(err, data) {
 					if(!err) {
 						$rootScope.fleet = data;
