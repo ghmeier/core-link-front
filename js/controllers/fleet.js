@@ -251,11 +251,11 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var createFinalUpdateObject = function() {
-		for(var key in $scope.upgradeIds) {
-			$scope.upgradeIds[key].show = false;
-			for(var id in $scope.upgradeIds[key]) {
+		for(var key in $scope.planetUpgradeIds) {
+			$scope.planetUpgradeIds[key].show = false;
+			for(var id in $scope.planetUpgradeIds[key]) {
 				//console.log(JSON.stringify($scope.upgrades.planet[id]));
-				$scope.upgradeIds[key][id] = $scope.upgrades.planet[id];
+				$scope.planetUpgradeIds[key][id] = $scope.upgrades.planet[id];
 
 				if(typeof $scope.planet.upgrades !== 'undefined' && typeof $scope.planet.upgrades[id] !== 'undefined') {
 					var level = $scope.planet.upgrades[id].level;
@@ -299,10 +299,21 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var getFleetUpgradeIds = function() {
-		//TODO
 		HttpService.getRequest($rootScope.path + "/upgrades/fleet", function(err, data) {
 			if(!err) {
 				$scope.fleetUpgradeIds = data;
+				
+				//Check if the upgrade has already been purchased
+				for(var upgrade in $scope.fleetUpgradeIds)
+				{
+					for(var takenId in $rootScope.fleet.upgrades)
+					{
+						if(takenId == upgrade)
+						{
+							$scope.fleetUpgradeIds[upgrade] = null;
+						}
+					}
+				}
 			}
 		});
 	}
@@ -368,7 +379,6 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.buyFleetUpgrade = function(id) {
 		updateHarvesters(function(){})
-		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
 			HttpService.getRequest($rootScope.path + "/fleet/" + $rootScope.fleet.id + "/upgrade/" + id, function(err, data) {
 				if(!err)
 				{
@@ -381,6 +391,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					//$scope.fleetUpgradeIds = {};
 					//renewFleet();
 					//getPlanetInfo();
+					$scope.fleetUpgradeIds[id] = null;
 					getUpgrades();
 				}
 				else
@@ -388,7 +399,6 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					alert(JSON.stringify(data));
 				}
 			});
-		});
 	}
 	
 	$scope.addHarvester = function(ship_position){

@@ -82,7 +82,7 @@
 					<div style="width:35%; float:right;">
 					<!-- planet upgrades -->
 		    		<ul ng-repeat="u in fleetUpgradeIds">
-						<div style="margin:20px"><button style="width:100%;" type="button" class="btn btn-default" ng-click="u['show'] = !u['show']">{{u.name}} upgrade</button></div>
+						<div style="margin:20px"><button style="width:100%;" type="button" class="btn btn-default" ng-if="u.name" ng-click="u['show'] = !u['show']">{{u.name}} upgrade</button></div>
 						<div uib-collapse="u['show']">
 							<div style="width:100%;" ng-if="u.name">
 								<h3>{{u.name}}</h3>
