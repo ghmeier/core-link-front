@@ -105,7 +105,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		var amountOfFuel = $rootScope.fleet.fuel * 10;
 		var name = prompt("What shall this new planet be named:", "");
 		if(name == null || name == "") return null;
-		console.log($rootScope.path+"/planet/new?name="+name+"&discoverer="+$rootScope.fleet.name+"&parentId="+$scope.planet.id+"&fuel="+amountOfFuel);
+
 		HttpService.getRequest($rootScope.path+"/planet/new?name="+name+"&discoverer="+$rootScope.fleet.name+"&parentId="+$scope.planet.id+"&fuel="+amountOfFuel, function(err, data) {
 			if(err) {
 				alert("Oh No, nothing was found. Looks like " + name + " will have to wait another day");
@@ -117,7 +117,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				$rootScope.fleet.fuel -= (data.connections[0].weight*10);
 				$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 				HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
-					$rootScope.fleet = data;
+					$rootScope.fleet = data.data;
 				});
 				$scope.planet = {};
 				$scope.updateProgress = 0;
@@ -162,7 +162,9 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					$rootScope.fleet.fuel -= (choice.weight*10);
 					$rootScope.fleet.fuel = (parseFloat( $rootScope.fleet.fuel) + $scope.harvestingCarry).toFixed(1);
 					$scope.harvestingCarry = 0;
-					HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {});
+					HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+						$rootScope.fleet = data.data;
+					});
 					$scope.planet = {};
 					$scope.updateProgress = 0;
 					$scope.updateProgressMax = 0;
@@ -170,6 +172,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					$scope.planetUpgradeIds = {};
 					$scope.fleetUpgradeIds = {};
 					renewFleet();
+
 					getPlanetInfo();
 					getUpgrades();
 				}
@@ -331,7 +334,7 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		HttpService.getRequest($rootScope.path+"/upgrades/planet", function(err, data) {
 			if(!err) {
 				$scope.upgrades["planet"] = data;
-				console.log(data);
+				//console.log(data);
 			}
 			updateProgress();
 		});
@@ -346,7 +349,6 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 
 	$scope.buyPlanetUpgrade = function(id) {
 		updateHarvesters(function(){});
-<<<<<<< Updated upstream
 		HttpService.getRequest($rootScope.path+"/planet/"+$scope.planet.id+"/upgrade/"+id+"?fleet_id="+$rootScope.fleet.id, function(err, data) {
 			if(err) {
 				alert(data);
