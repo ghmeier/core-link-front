@@ -30,23 +30,23 @@
 		    		</div>
 		    	</div>
 		    	<div style="width:35%; float:right;" ng-if="planet.discoverer == fleet.name">
-		    		<ul ng-repeat="(key, upgrade) in upgradeIds">
+		    		<ul ng-repeat="(key, upgrade) in planetUpgradeIds">
 			    		<div style="margin:20px"><button style="width:100%;" type="button" class="btn btn-default" ng-click="upgrade['show'] = !upgrade['show']">{{key}} upgrade</button></div>
 						<div uib-collapse="upgrade['show']">
 
-							<ul ng-repeat="obj in upgradeIds[key]">
+							<ul ng-repeat="obj in planetUpgradeIds[key]">
 								<div style="width:100%;" ng-if="obj.name">
 									<h3>{{obj.name}}</h3>
 									<h5>{{obj.desc}}</h5>
 									<h3>Cost</h3>
-									<ul ng-repeat="(i, v) in upgradeIds[key][obj.id].cost">
+									<ul ng-repeat="(i, v) in planetUpgradeIds[key][obj.id].cost">
 										<h5 style="margin-right:10px;">{{i}} - {{v}}</h5>
 									</ul>
 									<h3>Reward</h3>
-									<ul ng-repeat="(i, v) in upgradeIds[key][obj.id].result">
+									<ul ng-repeat="(i, v) in planetUpgradeIds[key][obj.id].result">
 										<h5 style="margin-right:10px;">{{i}} - {{v}}</h5>
 									</ul>
-									<button style="width:100%; color:green;" ng-click="buyUpgrade(obj.id)">Buy</button>
+									<button style="width:100%; color:green;" ng-click="buyPlanetUpgrade(obj.id)">Buy</button>
 								</div>
 							</ul>
 						</div>
@@ -79,6 +79,28 @@
 			    		<h4 style="color:green;">855 copper</h3>
 			    		<h4 style="color:green;">1000 oil</h3>
 			    	</div>
+					<div style="width:35%; float:right;">
+					<!-- planet upgrades -->
+		    		<ul ng-repeat="u in fleetUpgradeIds">
+						<div style="margin:20px"><button style="width:100%;" type="button" class="btn btn-default" ng-click="u['show'] = !u['show']">{{u.name}} upgrade</button></div>
+						<div uib-collapse="u['show']">
+							<div style="width:100%;" ng-if="u.name">
+								<h3>{{u.name}}</h3>
+								<h5>{{u.desc}}</h5>
+								<h3>Cost</h3>
+								<ul ng-repeat="(i, v) in u.cost">
+									<h5 style="margin-right:10px;">{{i}} - {{v}}</h5>
+								</ul>
+								<h3>Reward</h3>
+								<ul ng-repeat="(i, v) in u.result">
+									<h5 style="margin-right:10px;">{{i}} - {{v}}</h5>
+								</ul>
+								<button style="width:100%; color:green;" ng-click="buyFleetUpgrade(u.id)">Buy</button>
+							</div>
+							</ul>
+						</div>
+					</ul>
+				</div>
 			    </ul>
 
 			</uib-tab>

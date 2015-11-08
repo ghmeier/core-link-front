@@ -4,7 +4,8 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	$scope.updateProgressMax = 0;
 	$scope.resourceList = {};
 	$scope.upgrades = {};
-	$scope.upgradeIds = {};
+	$scope.planetUpgradeIds = {};
+	$scope.fleetUpgradeIds = {};
 	$scope.currentTime = new Date().getTime();
 	$scope.harvestingTimer = new Date().getTime();
 	$scope.harvestingCarry = 0;
@@ -166,8 +167,8 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					$scope.updateProgress = 0;
 					$scope.updateProgressMax = 0;
 					$scope.resourceList = {};
-					$scope.upgrades = {};
-					$scope.upgradeIds = {};
+					$scope.planetUpgradeIds = {};
+					$scope.fleetUpgradeIds = {};
 					renewFleet();
 					getPlanetInfo();
 					getUpgrades();
@@ -247,21 +248,21 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 	}
 
 	var createFinalUpdateObject = function() {
-
 		for(var key in $scope.upgradeIds) {
 			$scope.upgradeIds[key].show = false;
 			for(var id in $scope.upgradeIds[key]) {
 				//console.log(JSON.stringify($scope.upgrades.planet[id]));
 				$scope.upgradeIds[key][id] = $scope.upgrades.planet[id];
+
 				if(typeof $scope.planet.upgrades !== 'undefined' && typeof $scope.planet.upgrades[id] !== 'undefined') {
 					var level = $scope.planet.upgrades[id].level;
 
-					for(var item in $scope.upgradeIds[key][id].cost) {
-						$scope.upgradeIds[key][id].cost[item] = ($scope.upgradeIds[key][id].cost[item] * Math.pow($scope.upgradeIds[key][id].cost_multiplier, level));
+					for(var item in $scope.planetUpgradeIds[key][id].cost) {
+						$scope.planetUpgradeIds[key][id].cost[item] = ($scope.planetUpgradeIds[key][id].cost[item] * Math.pow($scope.planetUpgradeIds[key][id].cost_multiplier, level));
 					}
 
-					for(var item in $scope.upgradeIds[key][id].result) {
-						$scope.upgradeIds[key][id].cost[item] = ($scope.upgradeIds[key][id].cost[item] * Math.pow($scope.upgradeIds[key][id].result_multiplier, level));
+					for(var item in $scope.planetUpgradeIds[key][id].result) {
+						$scope.planetUpgradeIds[key][id].cost[item] = ($scope.planetUpgradeIds[key][id].cost[item] * Math.pow($scope.planetUpgradeIds[key][id].result_multiplier, level));
 					}
 				}
 			}
@@ -278,21 +279,31 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		}
 	}
 
-	var getUpgradeIds = function() {
+	var getPlanetUpgradeIds = function() {
 
 		var planetResLength = ($scope.planet.resources).length
 		$scope.updateProgressMax += planetResLength;
 		for(var i = 0; i < planetResLength; i++) {
 			HttpService.getRequest($rootScope.path+"/upgrades/planet/find/"+$scope.planet.resources[i].type, function(err, data) {
 				if(!err) {
-
-					$scope.upgradeIds[data.type] = data.ids;
+					$scope.planetUpgradeIds[data.type] = data.ids;
 				}
 				updateProgress();
 			});
 		}
+		
+		getFleetUpgradeIds();
 	}
 
+	var getFleetUpgradeIds = function() {
+		//TODO
+		HttpService.getRequest($rootScope.path + "/upgrades/fleet", function(err, data) {
+			if(!err) {
+				$scope.fleetUpgradeIds = data;
+			}
+		});
+	}
+	
 	var getPlanetInfo = function() {
 
 		HttpService.getRequest($rootScope.path+"/planet/"+$rootScope.fleet.current_planet, function(err, data) {
@@ -301,12 +312,12 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 				setPlanetSize();
 				createResourceList();
 
-				getUpgradeIds();
+				getPlanetUpgradeIds();
 			}
 
 		});
 	}
-
+	
 	var getUpgrades = function() {
 
 		$scope.updateProgressMax += 3;
@@ -333,13 +344,13 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		});
 	}
 
-	$scope.buyUpgrade = function(id) {
+	$scope.buyPlanetUpgrade = function(id) {
 		updateHarvesters(function(){});
+<<<<<<< Updated upstream
 		HttpService.getRequest($rootScope.path+"/planet/"+$scope.planet.id+"/upgrade/"+id+"?fleet_id="+$rootScope.fleet.id, function(err, data) {
 			if(err) {
 				alert(data);
 			} else {
-
 				$scope.planet = data;/*{};
 				$scope.updateProgress = 0;
 				$scope.updateProgressMax = 0;
@@ -353,6 +364,31 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 		});
 	}
 
+	$scope.buyFleetUpgrade = function(id) {
+		updateHarvesters(function(){})
+		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
+			HttpService.getRequest($rootScope.path + "/fleet/" + $rootScope.fleet.id + "/upgrade/" + id, function(err, data) {
+				if(!err)
+				{
+					$scope.planet = {};
+					//$scope.updateProgress = 0;
+					//$scope.updateProgressMax = 0;
+					//$scope.resourceList = {};
+					//$scope.upgrades = {};
+					//$scope.planetUpgradeIds = {};
+					//$scope.fleetUpgradeIds = {};
+					//renewFleet();
+					//getPlanetInfo();
+					getUpgrades();
+				}
+				else
+				{
+					alert(JSON.stringify(data));
+				}
+			});
+		});
+	}
+	
 	$scope.addHarvester = function(ship_position){
 
 		HttpService.postRequest($rootScope.path+"/fleet/"+$rootScope.fleet.id+"/update", $rootScope.fleet, function(err, data) {
@@ -365,7 +401,8 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					$scope.updateProgressMax = 0;
 					$scope.resourceList = {};
 					$scope.upgrades = {};
-					$scope.upgradeIds = {};
+					$scope.planetUpgradeIds = {};
+					$scope.fleetUpgradeIds = {};
 					$rootScope.fleet = data;
 					getPlanetInfo();
 					getUpgrades();
@@ -386,7 +423,8 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					$scope.updateProgressMax = 0;
 					$scope.resourceList = {};
 					$scope.upgrades = {};
-					$scope.upgradeIds = {};
+					$scope.planetUpgradeIds = {};
+					$scope.fleetUpgradeIds = {};
 					$rootScope.fleet = data;
 					getPlanetInfo();
 					getUpgrades();
@@ -409,7 +447,8 @@ angular.module('corelink.controllers').controller("FleetController", function($r
 					$scope.updateProgressMax = 0;
 					$scope.resourceList = {};
 					$scope.upgrades = {};
-					$scope.upgradeIds = {};
+					$scope.planetUpgradeIds = {};
+					$scope.fleetUpgradeIds = {};
 					$rootScope.fleet = data;
 					getPlanetInfo();
 					getUpgrades();
